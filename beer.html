@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>Countdown to Beer O'Clock</title>
+<link rel="icon" type="image/png" href="beerfav.png">
+<style type="text/css">
+#countdown { font:5em helvetica,courier,san-serif }
+#beerholder { display:table-cell }
+#beer {	background:#f9c704; height:450px }
+#beer,#beerposition { width:270px }
+#beer,#beerglass { position:relative }
+#beerglass { margin-top:-450px }
+#beerposition {	margin:0; margin-left:auto; margin-right:auto }
+</style>
+<script lang="javascript">
+function setbeerlevel(proportion) {
+  var beer = document.getElementById("beer");
+  beer.style.marginTop = 450 * (1 - proportion) + "px";
+  beer.style.height = 450 * proportion + "px";
+}
+
+function getbeerlevel() {
+  var beer = document.getElementById("beer");
+  return beer.clientHeight / 450
+}
+
+function countdown() {
+  var now = new Date;
+  var displaystr;
+  var theMessage = "until <b>Beer O'Clock!</b>";
+  var beerday = 5;
+  var beerhour = 17;
+  var beerminute = 45;
+  var setTimeout = true;
+  var beerstarthour = 9;
+
+  if(now.getDay() == beerday && now.getHours() >= beerhour && 
+      now.getMinutes() >= beerminute) {
+    displaystr = "It's Beer O'Clock!";
+    theMessage = "Fancy a pint?";
+    setTimeout = false;
+  } else {
+    var beer_o_clock = new Date(now.getTime() +
+	(beerday - now.getDay()) * 24 * 60 * 60 * 1E3);
+    beer_o_clock.setHours(beerhour);
+    beer_o_clock.setMinutes(beerminute);
+    beer_o_clock.setSeconds(0);
+    beer_o_clock.setMilliseconds(0);
+
+    var remaining = beer_o_clock.getTime() - now.getTime();
+    var remaining_milliseconds = remaining;
+    var milliseconds = remaining % 1E3;
+    remaining = Math.floor(remaining / 1E3);
+    var seconds = (remaining % 60).toFixed(0);
+    remaining = Math.floor(remaining / 60);
+    var minutes = (remaining % 60).toFixed(0);
+    remaining = Math.floor(remaining / 60);
+    var hours = (remaining % 24).toFixed(0);
+    remaining = Math.floor(remaining / 24);
+    var days = remaining.toFixed(0);
+
+    displaystr = "";
+    if(days > 0) { displaystr += days + " days, "; }
+    if(hours > 0) { displaystr += hours + " hours, "; }
+    if(minutes > 0) { displaystr += minutes + " minutes and "; }
+    displaystr += seconds + " seconds";
+
+    var hasbeer = false;
+    if(now.getDay() == beerday) {
+      var hour = now.getHours();
+      if(hour >= beerstarthour) {
+        if(hour > beerhour) {
+          proportion = 1;
+        } else {
+          proportion = 1 - remaining_milliseconds / 
+            ((beerhour - beerstarthour) * 1E3 * 60 * 60);
+        }
+        setbeerlevel(proportion);
+        hasbeer = true;
+      }
+    }
+    if(!hasbeer) { setbeerlevel(0.0); }
+  }
+  document.getElementById("countdown").innerHTML = displaystr;
+  document.getElementById("theMessage").innerHTML = theMessage;
+  if(setTimeout) { window.setTimeout("countdown()", 100) }
+};
+</script>
+</head>
+<body onload="countdown()"> 
+<table width="100%" height="100%">
+  <tr>
+    <td align="center" valign="center">
+      <div id="countdown"></div>
+      <div id="theMessage">until <b>Beer O'clock!</b>
+    </td>
+  </tr>
+  <tr>
+    <td id="beerholder">
+      <div id="beerposition">
+        <div id="beer">&nbsp;</div>
+          <div id="beerglass">
+            <img src="beerimages/empty_glass.png"/>
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
