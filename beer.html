@@ -59,7 +59,11 @@ function countdown() {
     var days = remaining.toFixed(0);
 
     displaystr = "";
-    if(days > 0) { displaystr += days + " days, "; }
+    if(days > 0) {
+        if(days > 1) { displaystr += days + " days, "; }
+        else { displaystr += days + " day, "; }
+    }
+
     if(hours > 0) { displaystr += hours + " hours, "; }
     if(minutes > 0) { displaystr += minutes + " minutes and "; }
     displaystr += seconds + " seconds";
